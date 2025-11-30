@@ -14,7 +14,7 @@ junit = "4.13.2"
 kotlin = "2.2.20"
 kotlinxCoroutines = "1.9.0"
 kotlinxAtomicfu = "0.25.0"
-multiplatformCrypto = "0.9.3"
+multiplatformCrypto = "0.9.5"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
