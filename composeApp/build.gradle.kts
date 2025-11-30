@@ -1,3 +1,4 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -23,7 +24,9 @@ kotlin {
             isStatic = true
         }
     }
-    
+
+    jvm()
+
     js {
         browser()
         binaries.executable()
@@ -50,6 +53,10 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+        jvmMain.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation(libs.kotlinx.coroutinesSwing)
         }
     }
 }
@@ -83,4 +90,16 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+}
+
+compose.desktop {
+    application {
+        mainClass = "se.ejp.dulvindr.MainKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "se.ejp.dulvindr"
+            packageVersion = "1.0.0"
+        }
+    }
 }

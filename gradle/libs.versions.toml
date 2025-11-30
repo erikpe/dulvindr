@@ -30,6 +30,7 @@ androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "kotlinxAtomicfu" }
 multiplatform-crypto-libsodium = { module = "com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings", version.ref = "multiplatformCrypto" }
+kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinxCoroutines" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
