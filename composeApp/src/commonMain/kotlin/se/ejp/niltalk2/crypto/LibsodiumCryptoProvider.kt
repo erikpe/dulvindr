@@ -3,7 +3,6 @@ package se.ejp.niltalk2.crypto
 import com.ionspin.kotlin.crypto.LibsodiumInitializer
 import com.ionspin.kotlin.crypto.box.Box
 import com.ionspin.kotlin.crypto.util.encodeToUByteArray
-import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.resume
@@ -24,32 +23,21 @@ import kotlin.random.Random
 class LibsodiumCryptoProvider : CryptoProvider {
 
     companion object {
-        private val isInitialized = atomic(false)
+        private var isInitialized = false
         private val initMutex = Mutex()
 
         /**
-         * Initialize libsodium asynchronously.
-         * This must be called before any crypto operations.
-         * Uses a mutex to ensure only one initialization happens.
+         * Initialize libsodium. Must be called before any crypto operations.
+         * Safe to call multiple times - subsequent calls are no-ops.
          */
         suspend fun initialize() {
-            // Quick check without lock
-            if (isInitialized.value) {
-                return
-            }
-
-            // Use mutex to ensure only one coroutine performs initialization
             initMutex.withLock {
-                // Double-check after acquiring lock
-                if (isInitialized.value) {
-                    return
-                }
-
-                // Suspend until callback is invoked
-                suspendCoroutine { continuation ->
-                    LibsodiumInitializer.initializeWithCallback {
-                        isInitialized.value = true
-                        continuation.resume(Unit)
+                if (!isInitialized) {
+                    suspendCoroutine { continuation ->
+                        LibsodiumInitializer.initializeWithCallback {
+                            isInitialized = true
+                            continuation.resume(Unit)
+                        }
                     }
                 }
             }
@@ -58,7 +46,7 @@ class LibsodiumCryptoProvider : CryptoProvider {
         /**
          * Check if libsodium is ready to use.
          */
-        fun isReady(): Boolean = isInitialized.value
+        fun isReady(): Boolean = isInitialized
     }
 
     override fun generateKeyPair(): KeyPair {
