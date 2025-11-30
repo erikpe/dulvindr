@@ -44,6 +44,9 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.atomicfu)
+            implementation(libs.multiplatform.crypto.libsodium)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

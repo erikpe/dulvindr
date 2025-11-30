@@ -12,7 +12,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import se.ejp.niltalk2.crypto.CryptoException
 import se.ejp.niltalk2.crypto.CryptoProvider
 import se.ejp.niltalk2.crypto.LibsodiumCryptoProvider
 import se.ejp.niltalk2.model.Identity
@@ -30,29 +34,47 @@ class CreateIdentityViewModel(
     var isCreating by mutableStateOf(false)
         private set
 
+    var errorMessage by mutableStateOf<String?>(null)
+        private set
+
     fun onNameChange(newName: String) {
         name = newName
+        errorMessage = null
     }
 
     fun createIdentity() {
         if (name.isBlank()) return
 
         isCreating = true
-        try {
-            val keyPair = cryptoProvider.generateKeyPair()
-            identity = Identity(
-                name = name.trim(),
-                publicKey = keyPair.publicKey,
-                privateKey = keyPair.privateKey
-            )
-        } finally {
-            isCreating = false
+        errorMessage = null
+
+        // Run crypto operations in a background thread to avoid blocking UI
+        viewModelScope.launch(Dispatchers.Default) {
+            try {
+                // Initialize libsodium first
+                LibsodiumCryptoProvider.initialize()
+
+                // Generate key pair
+                val keyPair = cryptoProvider.generateKeyPair()
+                identity = Identity(
+                    name = name.trim(),
+                    publicKey = keyPair.publicKey,
+                    privateKey = keyPair.privateKey
+                )
+            } catch (e: CryptoException) {
+                errorMessage = "Crypto error: ${e.message}"
+            } catch (e: Exception) {
+                errorMessage = "Failed to create identity: ${e.message}"
+            } finally {
+                isCreating = false
+            }
         }
     }
 
     fun reset() {
         name = ""
         identity = null
+        errorMessage = null
     }
 }
 
@@ -73,6 +95,7 @@ fun CreateIdentityScreen(
                 onNameChange = viewModel::onNameChange,
                 onCreateClick = viewModel::createIdentity,
                 isCreating = viewModel.isCreating,
+                errorMessage = viewModel.errorMessage,
                 modifier = Modifier.padding(24.dp)
             )
         } else {
@@ -91,6 +114,7 @@ private fun CreateIdentityForm(
     onNameChange: (String) -> Unit,
     onCreateClick: () -> Unit,
     isCreating: Boolean,
+    errorMessage: String?,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -133,6 +157,25 @@ private fun CreateIdentityForm(
                 )
             } else {
                 Text("Generate Keys & Create Identity")
+            }
+        }
+
+        // Show error message if any
+        errorMessage?.let { error ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer
+                )
+            ) {
+                Text(
+                    text = error,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                    modifier = Modifier.padding(16.dp)
+                )
             }
         }
 
