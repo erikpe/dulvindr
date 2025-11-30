@@ -37,5 +37,16 @@ data class Identity(
             byte.toInt().and(0xFF).toString(16).padStart(2, '0')
         }
     }
+
+    /**
+     * Encode identity data (name and public key) for QR code.
+     * Format: name|hexadecimal-encoded-public-key
+     */
+    fun encodeForQRCode(): String {
+        val publicKeyHex = publicKey.joinToString("") { byte ->
+            byte.toInt().and(0xFF).toString(16).padStart(2, '0')
+        }
+        return "$name|$publicKeyHex"
+    }
 }
 

@@ -15,6 +15,7 @@ kotlin = "2.2.20"
 kotlinxCoroutines = "1.9.0"
 kotlinxAtomicfu = "0.25.0"
 multiplatformCrypto = "0.9.5"
+qrose = "1.0.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -31,6 +32,7 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "kotlinxAtomicfu" }
 multiplatform-crypto-libsodium = { module = "com.ionspin.kotlin:multiplatform-crypto-libsodium-bindings", version.ref = "multiplatformCrypto" }
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinxCoroutines" }
+qrose = { module = "io.github.alexzhirkevich:qrose", version.ref = "qrose" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

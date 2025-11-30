@@ -20,6 +20,7 @@ import se.ejp.dulvindr.crypto.CryptoException
 import se.ejp.dulvindr.crypto.CryptoProvider
 import se.ejp.dulvindr.crypto.LibsodiumCryptoProvider
 import se.ejp.dulvindr.model.Identity
+import se.ejp.dulvindr.ui.component.QrCodeImage
 
 class CreateIdentityViewModel(
     private val cryptoProvider: CryptoProvider = LibsodiumCryptoProvider()
@@ -213,6 +214,38 @@ private fun IdentityCreatedView(
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
+
+        // QR Code Card
+        Card(
+            modifier = Modifier
+                .padding(vertical = 16.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Scan to Exchange Contact",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                // QR Code
+                val qrCodeData = identity.encodeForQRCode()
+
+                QrCodeImage(
+                    data = qrCodeData,
+                    size = 250.dp,
+                    modifier = Modifier.padding(8.dp)
+                )
+
+                Text(
+                    text = "Share this QR code to exchange identities",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
 
         Card(
             modifier = Modifier
