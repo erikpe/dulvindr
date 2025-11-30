@@ -1,4 +1,4 @@
-package se.ejp.niltalk2.crypto
+package se.ejp.dulvindr.crypto
 
 /**
  * Cryptographic operations provider using libsodium's crypto_box

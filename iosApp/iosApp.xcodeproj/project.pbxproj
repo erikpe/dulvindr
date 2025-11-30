@@ -87,7 +87,7 @@
 			packageProductDependencies = (
 			);
 			productName = iosApp;
-			productReference = 27F1D9D79F2741FEBC990481 /* NilTalk2.app */;
+			productReference = 27F1D9D79F2741FEBC990481 /* Dulvindr.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

@@ -1,12 +1,12 @@
-package se.ejp.niltalk2
+package se.ejp.dulvindr
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import se.ejp.niltalk2.ui.screen.CreateIdentityScreen
-import se.ejp.niltalk2.ui.screen.CryptoTestScreen
+import se.ejp.dulvindr.ui.screen.CreateIdentityScreen
+import se.ejp.dulvindr.ui.screen.CryptoTestScreen
 
 @Composable
 @Preview

@@ -1,4 +1,4 @@
-package se.ejp.niltalk2.model
+package se.ejp.dulvindr.model
 
 /**
  * Represents a user's identity consisting of a name and cryptographic key pair.

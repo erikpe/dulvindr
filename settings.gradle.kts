@@ -1,4 +1,4 @@
-rootProject.name = "NilTalk2"
+rootProject.name = "Dulvindr"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

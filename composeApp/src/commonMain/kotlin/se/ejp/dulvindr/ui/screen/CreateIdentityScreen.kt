@@ -1,4 +1,4 @@
-package se.ejp.niltalk2.ui.screen
+package se.ejp.dulvindr.ui.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,10 +16,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import se.ejp.niltalk2.crypto.CryptoException
-import se.ejp.niltalk2.crypto.CryptoProvider
-import se.ejp.niltalk2.crypto.LibsodiumCryptoProvider
-import se.ejp.niltalk2.model.Identity
+import se.ejp.dulvindr.crypto.CryptoException
+import se.ejp.dulvindr.crypto.CryptoProvider
+import se.ejp.dulvindr.crypto.LibsodiumCryptoProvider
+import se.ejp.dulvindr.model.Identity
 
 class CreateIdentityViewModel(
     private val cryptoProvider: CryptoProvider = LibsodiumCryptoProvider()

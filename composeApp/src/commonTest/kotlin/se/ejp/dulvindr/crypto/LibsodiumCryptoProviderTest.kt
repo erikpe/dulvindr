@@ -1,4 +1,4 @@
-package se.ejp.niltalk2.crypto
+package se.ejp.dulvindr.crypto
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

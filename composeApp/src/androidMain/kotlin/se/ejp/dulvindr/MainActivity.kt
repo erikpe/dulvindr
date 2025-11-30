@@ -1,4 +1,4 @@
-package se.ejp.niltalk2
+package se.ejp.dulvindr
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

@@ -1,4 +1,4 @@
-package se.ejp.niltalk2
+package se.ejp.dulvindr
 
 class Greeting {
     private val platform = getPlatform()

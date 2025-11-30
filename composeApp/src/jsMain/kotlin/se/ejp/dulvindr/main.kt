@@ -1,4 +1,4 @@
-package se.ejp.niltalk2
+package se.ejp.dulvindr
 
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport

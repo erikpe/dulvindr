@@ -55,11 +55,11 @@ kotlin {
 }
 
 android {
-    namespace = "se.ejp.niltalk2"
+    namespace = "se.ejp.dulvindr"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "se.ejp.niltalk2"
+        applicationId = "se.ejp.dulvindr"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1

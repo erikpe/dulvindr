@@ -1,4 +1,4 @@
-package se.ejp.niltalk2
+package se.ejp.dulvindr
 
 class JsPlatform: Platform {
     override val name: String = "Web with Kotlin/JS"
