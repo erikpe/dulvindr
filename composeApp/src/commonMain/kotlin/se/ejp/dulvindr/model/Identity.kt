@@ -1,5 +1,8 @@
 package se.ejp.dulvindr.model
 
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
+
 /**
  * Represents a user's identity consisting of a name and cryptographic key pair.
  * The key pair is used for stateless authenticated encryption (crypto_box).
@@ -47,6 +50,23 @@ data class Identity(
             byte.toInt().and(0xFF).toString(16).padStart(2, '0')
         }
         return "$name|$publicKeyHex"
+    }
+
+    /**
+     * Convert this Identity to IdentityMetadata (without the private key).
+     * This is used to separate public information from the sensitive private key.
+     *
+     * @param id Optional UUID for the identity. If not provided, a random UUID will be generated.
+     * @return IdentityMetadata containing only public information
+     */
+    @OptIn(ExperimentalUuidApi::class, kotlin.time.ExperimentalTime::class)
+    fun toMetadata(id: String = Uuid.random().toString()): IdentityMetadata {
+        return IdentityMetadata(
+            id = id,
+            name = name,
+            publicKey = publicKey,
+            createdAt = kotlin.time.Clock.System.now().toEpochMilliseconds()
+        )
     }
 }
 

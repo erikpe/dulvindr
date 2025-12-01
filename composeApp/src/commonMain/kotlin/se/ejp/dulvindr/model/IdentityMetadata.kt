@@ -1,8 +1,6 @@
 package se.ejp.dulvindr.model
 
 import kotlinx.serialization.Serializable
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 @Serializable
 data class IdentityMetadata(
@@ -52,26 +50,21 @@ data class IdentityMetadata(
         }
         return "$name|$publicKeyHex"
     }
-}
 
-// Extension to convert Identity to metadata
-@OptIn(ExperimentalUuidApi::class, kotlin.time.ExperimentalTime::class)
-fun Identity.toMetadata(id: String = Uuid.random().toString()): IdentityMetadata {
-    return IdentityMetadata(
-        id = id,
-        name = name,
-        publicKey = publicKey,
-        createdAt = kotlin.time.Clock.System.now().toEpochMilliseconds()
-    )
-}
-
-// Extension to convert IdentityMetadata back to Identity (requires private key from secure storage)
-fun IdentityMetadata.toIdentity(privateKey: ByteArray): Identity {
-    return Identity(
-        name = name,
-        publicKey = publicKey,
-        privateKey = privateKey
-    )
+    /**
+     * Convert this IdentityMetadata back to a full Identity.
+     * Requires the private key from secure storage.
+     *
+     * @param privateKey The private key retrieved from secure storage
+     * @return Full Identity with both public and private keys
+     */
+    fun toIdentity(privateKey: ByteArray): Identity {
+        return Identity(
+            name = name,
+            publicKey = publicKey,
+            privateKey = privateKey
+        )
+    }
 }
 
 

@@ -22,7 +22,6 @@ import se.ejp.dulvindr.crypto.CryptoProvider
 import se.ejp.dulvindr.crypto.LibsodiumCryptoProvider
 import se.ejp.dulvindr.model.Identity
 import se.ejp.dulvindr.model.IdentityMetadata
-import se.ejp.dulvindr.model.toMetadata
 import se.ejp.dulvindr.storage.IdentityStorageManager
 import se.ejp.dulvindr.storage.StubIdentityStorage
 import se.ejp.dulvindr.storage.StubSecureStorage
