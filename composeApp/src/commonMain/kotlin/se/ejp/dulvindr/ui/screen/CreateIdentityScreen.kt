@@ -68,15 +68,14 @@ class CreateIdentityViewModel(
                 val keyPair = cryptoProvider.generateKeyPair()
                 val identity = Identity(
                     name = name.trim(),
-                    publicKey = keyPair.publicKey,
-                    privateKey = keyPair.privateKey
+                    keyPair = keyPair
                 )
 
                 // Convert to metadata and store
                 val metadata = identity.toMetadata()
 
                 // Store identity metadata and private key separately
-                storageManager.saveIdentity(metadata, identity.privateKey)
+                storageManager.saveIdentity(metadata, identity.keyPair.privateKey)
 
                 // Update UI with metadata only (no private key in memory)
                 identityMetadata = metadata

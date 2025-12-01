@@ -1,5 +1,6 @@
 package se.ejp.dulvindr.model
 
+import se.ejp.dulvindr.crypto.KeyPair
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -61,8 +62,10 @@ data class IdentityMetadata(
     fun toIdentity(privateKey: ByteArray): Identity {
         return Identity(
             name = name,
-            publicKey = publicKey,
-            privateKey = privateKey
+            keyPair = KeyPair(
+                publicKey = publicKey,
+                privateKey = privateKey
+            )
         )
     }
 }

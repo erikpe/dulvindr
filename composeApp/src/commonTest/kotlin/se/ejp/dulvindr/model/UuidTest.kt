@@ -1,5 +1,6 @@
 package se.ejp.dulvindr.model
 
+import se.ejp.dulvindr.crypto.KeyPair
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -59,8 +60,10 @@ class UuidTest {
         // Create an identity with stdlib UUID
         val identity = Identity(
             name = "Test User",
-            publicKey = ByteArray(32) { it.toByte() },
-            privateKey = ByteArray(32) { (it + 100).toByte() }
+            keyPair = KeyPair(
+                publicKey = ByteArray(32) { it.toByte() },
+                privateKey = ByteArray(32) { (it + 100).toByte() }
+            )
         )
 
         // Convert to metadata (uses Uuid.random() internally)

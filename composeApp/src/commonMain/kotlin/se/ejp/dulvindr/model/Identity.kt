@@ -1,5 +1,6 @@
 package se.ejp.dulvindr.model
 
+import se.ejp.dulvindr.crypto.KeyPair
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -9,8 +10,7 @@ import kotlin.uuid.Uuid
  */
 data class Identity(
     val name: String,
-    val publicKey: ByteArray,  // 32 bytes - X25519 public key
-    val privateKey: ByteArray  // 32 bytes - X25519 private key
+    val keyPair: KeyPair  // X25519 key pair (32 bytes public + 32 bytes private)
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -19,16 +19,14 @@ data class Identity(
         other as Identity
 
         if (name != other.name) return false
-        if (!publicKey.contentEquals(other.publicKey)) return false
-        if (!privateKey.contentEquals(other.privateKey)) return false
+        if (keyPair != other.keyPair) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = name.hashCode()
-        result = 31 * result + publicKey.contentHashCode()
-        result = 31 * result + privateKey.contentHashCode()
+        result = 31 * result + keyPair.hashCode()
         return result
     }
 
@@ -36,7 +34,7 @@ data class Identity(
      * Get a short fingerprint of the public key for display purposes.
      */
     fun getPublicKeyFingerprint(): String {
-        return publicKey.take(8).joinToString("") { byte ->
+        return keyPair.publicKey.take(8).joinToString("") { byte ->
             byte.toInt().and(0xFF).toString(16).padStart(2, '0')
         }
     }
@@ -46,7 +44,7 @@ data class Identity(
      * Format: name|hexadecimal-encoded-public-key
      */
     fun encodeForQRCode(): String {
-        val publicKeyHex = publicKey.joinToString("") { byte ->
+        val publicKeyHex = keyPair.publicKey.joinToString("") { byte ->
             byte.toInt().and(0xFF).toString(16).padStart(2, '0')
         }
         return "$name|$publicKeyHex"
@@ -64,7 +62,7 @@ data class Identity(
         return IdentityMetadata(
             id = id,
             name = name,
-            publicKey = publicKey,
+            publicKey = keyPair.publicKey,
             createdAt = kotlin.time.Clock.System.now().toEpochMilliseconds()
         )
     }
