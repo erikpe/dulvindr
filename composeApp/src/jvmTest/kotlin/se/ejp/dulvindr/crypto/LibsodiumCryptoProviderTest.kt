@@ -1,5 +1,8 @@
 package se.ejp.dulvindr.crypto
 
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -10,6 +13,21 @@ class LibsodiumCryptoProviderTest {
     
     private val crypto = LibsodiumCryptoProvider()
     
+    @BeforeTest
+    fun setup() = runBlocking {
+        // Initialize libsodium before running any tests
+        // Add timeout in case initialization hangs
+        try {
+            withTimeout(5000) {
+                LibsodiumCryptoProvider.initialize()
+            }
+        } catch (e: Exception) {
+            println("Libsodium initialization failed: ${e.message}")
+            // Initialization might fail on some platforms (e.g., Android unit tests on JVM)
+            // Tests will fail gracefully with CryptoException if libsodium is not ready
+        }
+    }
+
     @Test
     fun testKeyPairGeneration() {
         val keyPair = crypto.generateKeyPair()
