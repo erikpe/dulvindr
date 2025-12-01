@@ -49,6 +49,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.atomicfu)
+            implementation(libs.kotlinx.datetime)
             implementation(libs.multiplatform.crypto.libsodium)
             implementation(libs.qrose)
         }

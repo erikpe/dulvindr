@@ -21,16 +21,25 @@ import se.ejp.dulvindr.crypto.CryptoException
 import se.ejp.dulvindr.crypto.CryptoProvider
 import se.ejp.dulvindr.crypto.LibsodiumCryptoProvider
 import se.ejp.dulvindr.model.Identity
+import se.ejp.dulvindr.model.IdentityMetadata
+import se.ejp.dulvindr.model.toMetadata
+import se.ejp.dulvindr.storage.IdentityStorageManager
+import se.ejp.dulvindr.storage.StubIdentityStorage
+import se.ejp.dulvindr.storage.StubSecureStorage
 import se.ejp.dulvindr.ui.component.QrCodeImage
 
 class CreateIdentityViewModel(
-    private val cryptoProvider: CryptoProvider = LibsodiumCryptoProvider()
+    private val cryptoProvider: CryptoProvider = LibsodiumCryptoProvider(),
+    private val storageManager: IdentityStorageManager = IdentityStorageManager(
+        identityStorage = StubIdentityStorage(),
+        secureStorage = StubSecureStorage()
+    )
 ) : ViewModel() {
 
     var name by mutableStateOf("")
         private set
 
-    var identity by mutableStateOf<Identity?>(null)
+    var identityMetadata by mutableStateOf<IdentityMetadata?>(null)
         private set
 
     var isCreating by mutableStateOf(false)
@@ -58,11 +67,20 @@ class CreateIdentityViewModel(
 
                 // Generate key pair
                 val keyPair = cryptoProvider.generateKeyPair()
-                identity = Identity(
+                val identity = Identity(
                     name = name.trim(),
                     publicKey = keyPair.publicKey,
                     privateKey = keyPair.privateKey
                 )
+
+                // Convert to metadata and store
+                val metadata = identity.toMetadata()
+
+                // Store identity metadata and private key separately
+                storageManager.saveIdentity(metadata, identity.privateKey)
+
+                // Update UI with metadata only (no private key in memory)
+                identityMetadata = metadata
             } catch (e: CryptoException) {
                 errorMessage = "Crypto error: ${e.message}"
             } catch (e: Exception) {
@@ -75,7 +93,7 @@ class CreateIdentityViewModel(
 
     fun reset() {
         name = ""
-        identity = null
+        identityMetadata = null
         errorMessage = null
     }
 }
@@ -85,13 +103,13 @@ fun CreateIdentityScreen(
     modifier: Modifier = Modifier,
     viewModel: CreateIdentityViewModel = viewModel { CreateIdentityViewModel() }
 ) {
-    val identity = viewModel.identity
+    val identityMetadata = viewModel.identityMetadata
 
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        if (identity == null) {
+        if (identityMetadata == null) {
             CreateIdentityForm(
                 name = viewModel.name,
                 onNameChange = viewModel::onNameChange,
@@ -102,7 +120,7 @@ fun CreateIdentityScreen(
             )
         } else {
             IdentityCreatedView(
-                identity = identity,
+                identityMetadata = identityMetadata,
                 onCreateAnother = viewModel::reset,
                 modifier = Modifier.padding(24.dp)
             )
@@ -192,7 +210,7 @@ private fun CreateIdentityForm(
 
 @Composable
 private fun IdentityCreatedView(
-    identity: Identity,
+    identityMetadata: IdentityMetadata,
     onCreateAnother: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -232,7 +250,7 @@ private fun IdentityCreatedView(
                 )
 
                 // QR Code
-                val qrCodeData = identity.encodeForQRCode()
+                val qrCodeData = identityMetadata.encodeForQRCode()
 
                 QrCodeImage(
                     data = qrCodeData,
@@ -257,12 +275,24 @@ private fun IdentityCreatedView(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
+                    text = "Identity ID",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = identityMetadata.id,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontFamily = FontFamily.Monospace,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                Text(
                     text = "Name",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = identity.name,
+                    text = identityMetadata.name,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
@@ -273,7 +303,7 @@ private fun IdentityCreatedView(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = identity.getPublicKeyFingerprint(),
+                    text = identityMetadata.getPublicKeyFingerprint(),
                     style = MaterialTheme.typography.bodyMedium,
                     fontFamily = FontFamily.Monospace,
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -287,7 +317,7 @@ private fun IdentityCreatedView(
                 )
                 SelectionContainer {
                     Text(
-                        text = identity.publicKey.joinToString("") { byte ->
+                        text = identityMetadata.publicKey.joinToString("") { byte ->
                             byte.toInt().and(0xFF).toString(16).padStart(2, '0')
                         },
                         style = MaterialTheme.typography.bodySmall,
@@ -298,7 +328,7 @@ private fun IdentityCreatedView(
                 }
 
                 Text(
-                    text = "Key Length: ${identity.publicKey.size} bytes",
+                    text = "Key Length: ${identityMetadata.publicKey.size} bytes",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -306,7 +336,7 @@ private fun IdentityCreatedView(
         }
 
         Text(
-            text = "Your identity is stored in memory and ready to use for secure messaging.",
+            text = "Your identity is securely stored. Private key is protected in secure storage.",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(vertical = 16.dp)
