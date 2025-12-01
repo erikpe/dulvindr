@@ -1,6 +1,8 @@
 package se.ejp.dulvindr.ui.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -25,9 +27,9 @@ fun QrCodeImage(
 ) {
     val qrCodePainter = rememberQrCodePainter(data) {
         shapes {
-            ball = QrBallShape.circle()
-            darkPixel = QrPixelShape.roundCorners()
-            frame = QrFrameShape.roundCorners(.25f)
+            ball = QrBallShape.square()
+            darkPixel = QrPixelShape.square()
+            frame = QrFrameShape.square()
         }
         colors {
             dark = QrBrush.solid(Color.Black)
@@ -35,10 +37,16 @@ fun QrCodeImage(
         }
     }
 
-    Image(
-        painter = qrCodePainter,
-        contentDescription = "QR Code for identity",
-        modifier = modifier.size(size)
-    )
+    Box(
+        modifier = modifier
+            .size(size)
+            .background(Color.White)
+    ) {
+        Image(
+            painter = qrCodePainter,
+            contentDescription = "QR Code for identity",
+            modifier = Modifier.size(size)
+        )
+    }
 }
 
