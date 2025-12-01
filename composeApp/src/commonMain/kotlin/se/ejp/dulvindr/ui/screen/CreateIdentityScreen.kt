@@ -2,6 +2,7 @@ package se.ejp.dulvindr.ui.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.*
@@ -277,6 +278,24 @@ private fun IdentityCreatedView(
                     fontFamily = FontFamily.Monospace,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
+
+                Text(
+                    text = "Full Public Key (hex)",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+                SelectionContainer {
+                    Text(
+                        text = identity.publicKey.joinToString("") { byte ->
+                            byte.toInt().and(0xFF).toString(16).padStart(2, '0')
+                        },
+                        style = MaterialTheme.typography.bodySmall,
+                        fontFamily = FontFamily.Monospace,
+                        modifier = Modifier.padding(bottom = 8.dp),
+                        lineHeight = MaterialTheme.typography.bodySmall.fontSize * 1.5
+                    )
+                }
 
                 Text(
                     text = "Key Length: ${identity.publicKey.size} bytes",
